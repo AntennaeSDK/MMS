@@ -23,18 +23,20 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class GcmXmppConfig {
-	
+
+	// TODO: ability to read the config values from a file or CLI
+
 	@Bean
 	public GcmXmppClient getGcmConnection() {
 
 		// username = GCM_PROJECT_ID + @gcm.googleapis.com
-		final String user = "549760952886" + "@gcm.googleapis.com";
+		final String user = "221875529200" + "@gcm.googleapis.com";
 
 		// password = GCM_SERVER_KEY
-		final String password = "AIzaSyCsjVuDvWlm6ZGeB52LVYXeRXTwxyjFzWs";
+		final String password = "AIzaSyCB-V4dbfcgbLPnd0IQAvPTEg83bo9gqrE";
 		
 		// Gcm Project Number
-		final String projectId = "549760952886";
+		final String projectId = "981962933635";
 
 		GcmXmppClient client = new GcmXmppClient(user, password, projectId);
 		client.connect();

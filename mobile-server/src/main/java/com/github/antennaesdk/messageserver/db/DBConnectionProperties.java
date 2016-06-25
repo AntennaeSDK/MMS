@@ -20,7 +20,7 @@ import org.springframework.jdbc.datasource.embedded.ConnectionProperties;
 
 import java.sql.Driver;
 
-public class NotifierConnectionProperties implements ConnectionProperties{
+public class DBConnectionProperties implements ConnectionProperties{
 
 	private Class<? extends Driver> driverClass;
 	private String url;

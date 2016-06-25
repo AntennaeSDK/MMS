@@ -53,6 +53,8 @@ public class ClientMessage {
      */
     private ClientMessageQOSEnum messageQOS = ClientMessageQOSEnum.DIRECT_CONNECTION_ONLY;
 
+
+    // getters and setters
     public ClientMessage(String requestId) {
         this.requestId = requestId;
     }
@@ -81,6 +83,8 @@ public class ClientMessage {
         this.messageQOS = messageQOS;
     }
 
+
+    // utility methods
     public String toJson(){
         Gson gson = new Gson();
         String json = gson.toJson(this);
@@ -91,7 +95,6 @@ public class ClientMessage {
         String json = gson.toJson(this);
         return json;
     }
-
     public static ClientMessage fromJson(String json ){
         Gson gson = new Gson();
         ClientMessage result = gson.fromJson( json, ClientMessage.class);

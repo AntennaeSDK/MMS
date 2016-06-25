@@ -20,6 +20,7 @@ import com.github.antennaesdk.common.messages.*;
 import com.github.antennaesdk.common.messages.util.JsonUtil;
 import com.github.antennaesdk.messageserver.rest.RestClient;
 import com.github.antennaesdk.server.messages.ClientMessageWrapper;
+import org.apache.catalina.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
@@ -27,11 +28,15 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -44,9 +49,20 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
     private static Logger logger = LoggerFactory.getLogger(ClientTextWebSocketHandler.class);
     private Map<String,WebSocketSession> clientSessions = new ConcurrentHashMap<String,WebSocketSession>();
     private Map<String, ClientAddress> clientAddresses = new ConcurrentHashMap<String,ClientAddress>();
+    private ExecutorService executorService;
 
     @Inject
     ServerTextWebSocketHandler serverHandler;
+
+    @PostConstruct
+    public void init(){
+        executorService = Executors.newCachedThreadPool();
+    }
+
+    @PreDestroy
+    public void shutdown(){
+        executorService.shutdown();
+    }
 
 
     @Override
@@ -81,6 +97,12 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
         }
     }
 
+    /**
+     * All messages from real-clients are received by this method.
+     *
+     * @param session
+     * @param incomingMessage
+     */
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage incomingMessage) {
 
@@ -88,8 +110,11 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
             return;
         }
 
+        // TODO: implement rate limiting
+
         String textmessage = incomingMessage.getPayload();
 
+        // route the message based on the payload
         routeMessage( session, textmessage);
     }
 
@@ -156,17 +181,7 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
                 break;
         }
     }
-
-    private void cacheTheClientAddress( WebSocketSession session, ClientAddress clientAddress){
-        ClientAddress stored = clientAddresses.get( session.getId());
-
-        if( stored == null ){
-            clientAddresses.put(session.getId(), clientAddress);
-        }else if( !clientAddress.equals(stored)) {
-            // TODO: handle error situations
-        }
-    }
-
+    
     private void processRestServerMessage( WebSocketSession session, ServerRestMessage serverRestMessage ){
 
         // Cache the client address
@@ -174,16 +189,8 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
             cacheTheClientAddress( session, serverRestMessage.getFrom());
         }
 
-        // construct the REST call
-        RestClient client = new RestClient( serverRestMessage.getHost());
-        String result = client.GET( serverRestMessage.getPath());
-
-        ClientMessage response = new ClientMessage( serverRestMessage.getRequestId());
-        response.setTo( serverRestMessage.getFrom());
-        response.setPayLoad( result );
-        response.setMessageQOS( ClientMessageQOSEnum.DIRECT_CONNECTION_ONLY );
-
-        sendToClient(session, response);
+        // execute the task in a background thread
+        executorService.submit( new BackgroundExecutor(session, serverRestMessage));
     }
 
     // This message should be processed by server side
@@ -253,6 +260,29 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
     }
 
 
+
+    /**
+     * Cache the sessionIds and ClientAddresses
+     *
+     * @param session
+     * @param clientAddress
+     */
+    private void cacheTheClientAddress( WebSocketSession session, ClientAddress clientAddress){
+        ClientAddress stored = clientAddresses.get( session.getId());
+
+        if( stored == null ){
+            clientAddresses.put(session.getId(), clientAddress);
+        }else if( !clientAddress.equals(stored)) {
+            // TODO: handle error situations
+        }
+    }
+
+    /**
+     * Get the SessionId based on the clientAddress
+     *
+     * @param clientAddress
+     * @return
+     */
     private WebSocketSession getSesssionForClient(ClientAddress clientAddress ){
 
         WebSocketSession result=null;
@@ -264,7 +294,7 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
             if( address.getAppName().equals(clientAddress.getAppName()) &&
                     address.getAppVersion().equals(clientAddress.getAppVersion()) &&
                     address.getDeviceId().equals(clientAddress.getDeviceId()) ){
-                    // TODO: make sure to search based on userId
+                // TODO: make sure to search based on userId
                 found = sessionId;
                 break;
             }
@@ -276,9 +306,34 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
         return result;
     }
 
+    /**
+     *
+     */
+    private class BackgroundExecutor implements Runnable{
 
-    //@Override
-    public void receiveFromClient(ServerMessage serverMessage) {
+        private ServerRestMessage serverRestMessage;
+        private WebSocketSession session;
 
+        public BackgroundExecutor( WebSocketSession session, ServerRestMessage serverRestMessage ){
+            this.session = session;
+            this.serverRestMessage = serverRestMessage;
+        }
+
+        @Override
+        public void run() {
+
+            // construct the REST call
+            RestClient client = new RestClient( serverRestMessage.getHost());
+            String result = client.GET( serverRestMessage.getPath());
+
+            ClientMessage response = new ClientMessage( serverRestMessage.getRequestId());
+            response.setTo( serverRestMessage.getFrom());
+            response.setPayLoad( result );
+            response.setMessageQOS( ClientMessageQOSEnum.DIRECT_CONNECTION_ONLY );
+
+            logger.info("background task completed");
+
+            sendToClient(session, response);
+        }
     }
 }
