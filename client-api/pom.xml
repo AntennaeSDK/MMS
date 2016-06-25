@@ -5,6 +5,7 @@
 
 	<groupId>com.github.antennaesdk.common</groupId>
 	<artifactId>client-api</artifactId>
+	<version>${client-api.version}</version>
 	<packaging>jar</packaging>
 
 	<name>client-api</name>
@@ -13,7 +14,7 @@
 	<parent>
 		<groupId>com.github.antennaesdk</groupId>
 		<artifactId>mms-parent</artifactId>
-		<version>parentversion</version>
+		<version>${parent-version}</version>
 		<relativePath>../</relativePath>
 	</parent>
 

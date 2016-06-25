@@ -5,7 +5,7 @@
 
 	<groupId>com.github.antennaesdk</groupId>
 	<artifactId>mms-parent</artifactId>
-	<version>parentversion</version>
+	<version>${parent-version}</version>
 	<packaging>pom</packaging>
 
 	<name>Mobile Messaging Server</name>
@@ -20,9 +20,13 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<client-api.version>0.1.0</client-api.version>
-		<server-api.version>0.1.0</server-api.version>
-		<message-server>0.1.0</message-server>
+
+		<project-version>0.1.1</project-version>
+
+		<client-api.version>${project-version}</client-api.version>
+		<server-api.version>${project-version}</server-api.version>
+		<message-server>${project-version}</message-server>
+		<parent-version>${project-version}</parent-version>
 	</properties>
 
 	<modules>
