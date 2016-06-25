@@ -28,7 +28,6 @@
 		<dependency>
 			<groupId>com.github.antennaesdk.common</groupId>
 			<artifactId>client-api</artifactId>
-			<version>0.1.11</version>
 		</dependency>
 
 		<!-- Third party Dependencies -->
