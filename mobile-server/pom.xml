@@ -35,7 +35,31 @@
 			<groupId>com.github.antennaesdk.common</groupId>
 			<artifactId>server-api</artifactId>
 		</dependency>
-	
+
+
+		<!-- Standard JSR libraries -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
+			<version>2.2.1-b04</version>
+		</dependency>
+
+
 		<!--  Spring Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -76,21 +100,7 @@
 		    <groupId>org.springframework.integration</groupId>
 		    <artifactId>spring-integration-websocket</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.websocket</groupId>
-			<artifactId>javax.websocket-api</artifactId>
-			<version>1.0</version>
-		</dependency>
-        <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
-            <version>2.2.1-b04</version>
-        </dependency>
+
 
          
 		<!-- 
@@ -111,19 +121,6 @@
 			<artifactId>spring-boot-starter-jersey</artifactId>
 		</dependency>
 		 -->
-				
-		
-		<!-- Third party Dependencies -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-		</dependency>
-		<!-- json can removed when we move out of parse -->
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20141113</version>
-		</dependency>
 		
 		<!-- smack libraries are used for XMPP messaging used for GCM -->
 		<dependency>
@@ -180,6 +177,7 @@
 		</dependency>
 
 
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-remote-shell</artifactId>
@@ -197,6 +195,7 @@
 			<artifactId>scala-library</artifactId>
 			<version>2.10.4</version>
 		</dependency>
+		-->
 	</dependencies>
 
 	<build>
