@@ -149,6 +149,7 @@ public class GcmXmppClient {
      * Returns a random message id to uniquely identify a message.
      *
      * TODO: use the database to generate a truly unique randomeId and persist in the DB.
+	 * @return String
      */
     public String generateMessageId() {
         return "m-" + UUID.randomUUID().toString();
@@ -178,6 +179,8 @@ public class GcmXmppClient {
 	
 	 /**
      * Sends a packet with contents provided.
+	  * @param jsonRequest JSONPayload
+	  * @throws NotConnectedException Exception
      */
     protected void send(String jsonRequest) throws NotConnectedException {
         Stanza request = new GcmPacketExtension(jsonRequest).toPacket();

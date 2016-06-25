@@ -73,6 +73,7 @@ public class ServerTextWebSocketHandler extends TextWebSocketHandler implements 
         ServerMessageWrapper trackedMessage = new ServerMessageWrapper();
         trackedMessage.setServerMessage(message);
         trackedMessage.setSessionId(wsSessionId);
+
         // TODO: set the nodeId ( which uniquely identifies a antennae node )
         // trackedMessage.setNodeId();
 

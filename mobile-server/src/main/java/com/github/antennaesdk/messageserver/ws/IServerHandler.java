@@ -4,7 +4,11 @@ package com.github.antennaesdk.messageserver.ws;
 import com.github.antennaesdk.common.messages.ServerMessage;
 
 /**
- * Created by snambi on 6/22/16.
+ * <code>IServerHandler</code> handles the messages from Server-side.
+ *
+ * Clients from datacenter/in-house connect to "/server" end-point.
+ * All traffic that goes through "/server" end-point will be handled by <code>IServerHandler</code>
+ *
  */
 public interface IServerHandler {
 

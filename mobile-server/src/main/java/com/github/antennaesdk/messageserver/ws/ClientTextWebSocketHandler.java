@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * <code>ClientTextWebSocketHandler</code> handles the incoming web-socket messages.
+ * <code>ClientTextWebSocketHandler</code> receives the incoming web-socket messages.
  *
  * reads the json, identifies the <code>topic</code> and then sends it to the <code>TopicProcessor</code>
  */
@@ -42,12 +42,22 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        logger.info("connection error");
+        logger.error("connection error on session " + session.getId() + ". \n" + exception);
+
+        // cleanup the cached sessions
+        if( clientSessions.get(session.getId()) != null ){
+            clientSessions.remove(session.getId());
+        }
+        if( clientAddresses.get(session.getId()) != null ){
+            clientAddresses.remove(session.getId());
+        }
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         logger.info("Client connection closed: " + session.getId() + ", status :" + status.toString());
+
+        // cleanup the cached sessions
         if( clientSessions.get(session.getId()) != null ){
             clientSessions.remove(session.getId());
         }
@@ -64,9 +74,19 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
         }
 
         String textmessage = incomingMessage.getPayload();
-        logger.info("SessionId: " + session.getId() + ", incomingMessage: " + textmessage );
 
-        String clazzName = JsonUtil.identifyClassType(textmessage);
+        routeMessage( session, textmessage);
+    }
+
+    /**
+     * <code>routeMessage</code> routes the message based on the payload to appropriate Processors.
+     *
+     * @param session
+     * @param textMessage
+     */
+    public void routeMessage( WebSocketSession session, String textMessage ){
+
+        String clazzName = JsonUtil.identifyClassType(textMessage);
 
         try {
 
@@ -77,12 +97,12 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
 
             }else if (clazzName.equals(ServerMessage.class.getName())) {
 
-                ServerMessage serverMessage = ServerMessage.fromJson(textmessage);
+                ServerMessage serverMessage = ServerMessage.fromJson(textMessage);
                 processServerMessage( session, serverMessage);
 
             } else if (clazzName.equals(ServerRestMessage.class.getName())) {
 
-                ServerRestMessage serverRestMessage = ServerRestMessage.fromJson(textmessage);
+                ServerRestMessage serverRestMessage = ServerRestMessage.fromJson(textMessage);
                 processRestServerMessage(session, serverRestMessage );
             }
 
@@ -175,7 +195,7 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
      * It first tries to send through an existing session (connection).
      * If connection is not found, then sends the message through GCM/APNS.
      *
-     * @param clientMessageWrapper
+     * @param clientMessageWrapper Message targetted for the client
      */
     public void sendToClient(ClientMessageWrapper clientMessageWrapper) {
 

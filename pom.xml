@@ -5,7 +5,7 @@
 
 	<groupId>com.github.antennaesdk</groupId>
 	<artifactId>mms-parent</artifactId>
-	<version>0.1.0</version>
+	<version>parentversion</version>
 	<packaging>pom</packaging>
 
 	<name>Mobile Messaging Server</name>
@@ -20,6 +20,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<client-api.version>0.1.0</client-api.version>
+		<server-api.version>0.1.0</server-api.version>
+		<message-server>0.1.0</message-server>
 	</properties>
 
 	<modules>
@@ -30,25 +33,74 @@
 
 	<dependencyManagement>
 		<dependencies>
-		<dependency>
-			<groupId>com.github.antennaesdk.common</groupId>
-			<artifactId>client-api</artifactId>
-			<version>0.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.antennaesdk.common</groupId>
-			<artifactId>server-api</artifactId>
-			<version>0.1.0</version>
-		</dependency>
+			<dependency>
+				<groupId>com.github.antennaesdk.common</groupId>
+				<artifactId>client-api</artifactId>
+				<version>${client-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.antennaesdk.common</groupId>
+				<artifactId>server-api</artifactId>
+				<version>${server-api.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<distributionManagement>
+		<repository>
+			<id>bintray-snambi-maven</id>
+			<name>snambi-maven</name>
+			<url>https://api.bintray.com/maven/snambi/maven/org.antennae/;publish=1</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<plugins>
 			<plugin>
-			    <groupId>pl.project13.maven</groupId>
-			    <artifactId>git-commit-id-plugin</artifactId>
-			</plugin>			
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<!--<version>1.0.0</version>-->
+				<configuration>
+					<outputDirectory>${project.build.directory}</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
