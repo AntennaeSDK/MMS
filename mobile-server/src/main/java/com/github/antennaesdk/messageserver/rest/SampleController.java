@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by snambi on 6/24/16.
+ * <code>SampleContrller</code> provides the date-string as a response to GET method.
  */
 @Controller
 public class SampleController {

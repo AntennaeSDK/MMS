@@ -1,3 +1,3 @@
 # Mobile Messaging Server and APIs
 
-Hosts the messaging server, client and server APIs
+Messaging server and  api libraries (client/server).
