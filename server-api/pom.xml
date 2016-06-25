@@ -29,13 +29,6 @@
 			<groupId>com.github.antennaesdk.common</groupId>
 			<artifactId>client-api</artifactId>
 		</dependency>
-
-		<!-- Third party Dependencies -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-		</dependency>
-		
 		
 	</dependencies>
 
