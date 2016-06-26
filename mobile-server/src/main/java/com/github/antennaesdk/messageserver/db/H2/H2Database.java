@@ -17,6 +17,7 @@ package com.github.antennaesdk.messageserver.db.H2;
 
 import com.github.antennaesdk.messageserver.db.DBConnectionProperties;
 import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.tool.hbm2ddl.DatabaseMetadata;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +29,17 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.persistence.Table;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.github.antennaesdk.messageserver.config.ApplicationConfig.entityClasses;
 
@@ -48,15 +54,18 @@ public class H2Database {
     private EmbeddedDatabase embeddedDatabase = null;
 
     public H2Database(){
-        String dbName = "notifier";
+
+        // TODO: move these to a common connection properties
+        // TODO: add the ability to be passed from CLI
+        String dbName = "mms";
         String dbUser = "sa";
         String dbPassword = "";
-        String dbFileUrl = "jdbc:h2:file:~/.notifier/" + dbName + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER_PORT=9090";
+        String dbFileUrl = "jdbc:h2:file:~/." + dbName +"/" + dbName + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER_PORT=9090";
         String dbMemUrl = "jdbc:h2:mem:" + dbName + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER_PORT=9090";
 
         // check whether the DB is already created.
         String dbPath = System.getProperty("user.home");
-        File dbFile = new File( dbPath + File.separator + ".notifier" + File.separator + dbName + ".mv.db");
+        File dbFile = new File( dbPath + File.separator + "." + dbName + File.separator + dbName + ".mv.db");
 
         boolean isDbCreated = false;
         if( dbFile.exists() == true && dbFile.isFile() ==true ){
@@ -130,6 +139,52 @@ public class H2Database {
     }
 
     public void generateSchemaAndCreateTables(SimpleDriverDataSource dataSource){
+
+        // Get the tables that are already in the DATABASE
+        List<String> tables = new ArrayList<>();
+        try {
+            Connection connection = dataSource.getConnection();
+            DatabaseMetaData databaseMetadata =  connection.getMetaData();
+            ResultSet resultSet = databaseMetadata.getTables(null, null, null, new String[]{"TABLE"});
+            while( resultSet.next() ){
+                String table = resultSet.getString(3);
+                logger.info("Table : " + table + " ... exists");
+                tables.add(table);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        List<Class> tablesToCreate = new ArrayList<>();
+        // Get the tables that are needed from Entity Classes
+        for(Class<?> c : entityClasses ){
+            // get the table names
+            Table table = c.getAnnotation(Table.class);
+
+            logger.info("Entity: " + c.getName() + " , Table: " + table.name() );
+            boolean isExisting = false;
+            for( String dbTable : tables) {
+                if( dbTable.equals(table.name())){
+                    isExisting = true;
+                    break;
+                }
+            }
+
+            if( !isExisting){
+                // these tables must be created
+                tablesToCreate.add(c);
+            }
+        }
+
+        // nothing to do, all tables already exist
+        if( tablesToCreate.size() == 0 ){
+            logger.info("Tables already exist... ");
+            return;
+        }else{
+            logger.info("Creating tables...");
+        }
+
+
         //create a minimal configuration
         org.hibernate.cfg.Configuration cfg = new org.hibernate.cfg.Configuration();
         cfg.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
@@ -145,7 +200,8 @@ public class H2Database {
             e.printStackTrace();
         }
 
-        for(Class<?> c : entityClasses ){
+        // add the tables to be created
+        for( Class c: tablesToCreate ) {
             cfg.addAnnotatedClass(c);
         }
 
