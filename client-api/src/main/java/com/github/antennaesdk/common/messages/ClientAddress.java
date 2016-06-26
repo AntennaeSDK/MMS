@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 
 
 /**
- * A client can addressed by many methods.
+ * A client can be addressed by many methods.
  * Any one of the following is valid.
  * The messaging broker will attempt to deliver the message based on the address-data and message-quality.
  *
@@ -35,17 +35,24 @@ import com.google.gson.Gson;
  */
 public class ClientAddress {
 
-    //
-    private String appName;
-    private String appVersion;
-    private String deviceId;
-    private String user;
-
     // TODO: use TypeAdapterFactory instead of passing the type.
     private String classType = ClientAddress.class.getName();
 
+    // fields
+    private String registrationId;
+    private String user;
+    private String appName;
+    private String appVersion;
+    private String deviceId;
+
 
     public ClientAddress(){
+    }
+    public String getRegistrationId() {
+        return registrationId;
+    }
+    public void setRegistrationId(String registrationId) {
+        this.registrationId = registrationId;
     }
     public String getUser() {
         return user;

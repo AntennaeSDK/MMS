@@ -31,6 +31,9 @@ import java.util.UUID;
  */
 public class ClientMessage {
 
+    // TODO: use TypeAdapterFactory instead of passing the type.
+    private String classType = ClientMessage.class.getName();
+
     /**
      * To where the message is sent.
      * it can be to an user or an app
@@ -44,9 +47,6 @@ public class ClientMessage {
      * it may be derived from a @See ServerMessage and passed on by the server in the ClientMessage
      */
     private String requestId;
-
-    // TODO: use TypeAdapterFactory instead of passing the type.
-    private String classType = ClientMessage.class.getName();
 
     /**
      * Broker decides the delivery of the message, based on the QOS type;

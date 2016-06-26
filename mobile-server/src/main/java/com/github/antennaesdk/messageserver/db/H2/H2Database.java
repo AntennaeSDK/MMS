@@ -155,8 +155,9 @@ public class H2Database {
             e.printStackTrace();
         }
 
-        List<Class> tablesToCreate = new ArrayList<>();
+
         // Get the tables that are needed from Entity Classes
+        List<Class> tablesToCreate = new ArrayList<>();
         for(Class<?> c : entityClasses ){
             // get the table names
             Table table = c.getAnnotation(Table.class);
@@ -176,7 +177,8 @@ public class H2Database {
             }
         }
 
-        // nothing to do, all tables already exist
+
+        // Check whether the tables need to be created...
         if( tablesToCreate.size() == 0 ){
             logger.info("Tables already exist... ");
             return;

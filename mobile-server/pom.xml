@@ -20,7 +20,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<start-class>org.antennae.server.notifier.NotifierDashboardApplication</start-class>
+		<start-class>com.github.antennaesdk.messageserver.MessageServerApplication</start-class>
 		<java.version>1.8</java.version>
 	</properties>
 

@@ -23,7 +23,16 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 /**
- * Created by snambi on 6/25/16.
+ * <code>MessageServerApplication</code> starts the "Mobile Messaging Server".
+ *
+ * It does the following,
+ *
+ * <ol>
+ *     <li>reads the CLI arguments</li>
+ *     <li>processes the CLI arguments</li>
+ *     <li>Stores the arguments for spring beans to use during bean initialization (optional) </li>
+ *     <li>Prints usage</li>
+ * </ol>
  */
 @SpringBootApplication
 @EnableAutoConfiguration
@@ -31,6 +40,13 @@ import org.springframework.context.annotation.Import;
 @ComponentScan( basePackages = { "com.github.antennaesdk.common", "com.github.antennaesdk.messageserver"})
 public class MessageServerApplication {
     public static void main(String[] args) {
+
+        // TODO: parse the CLI and print USAGE if necessary
+        // TODO: ability to pass GCM user,password, projectId
+        // TODO: ability to change the port
+        // TODO: ability add SSL connection
+        // TODO: ability to pass DB connection details
+
         SpringApplication.run( MessageServerApplication.class, args);
     }
 }
