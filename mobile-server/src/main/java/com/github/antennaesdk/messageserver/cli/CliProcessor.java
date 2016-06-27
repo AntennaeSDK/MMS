@@ -19,8 +19,8 @@ import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.Properties;
 
 /**
  * <code>CliProcessor</code> parses the command line arguments.
@@ -104,6 +104,7 @@ public class CliProcessor {
         File configFile = new File(file);
         if( configFile.exists() && configFile.canRead() ){
             configFileFound = true;
+            inputParameters.setConfigFile(configFile.getAbsolutePath());
         }else{
             // error condition
             // -f/--file option is not provided and default config file doesn't exist
@@ -112,8 +113,22 @@ public class CliProcessor {
     }
 
     /** process the parameters */
-    public void process(){
+    public void process() throws IOException {
 
+        // read the config file
+        String config = InputParameters.getInstance().getConfigFile();
+
+        File configFile = new File(config);
+        if( !configFile.exists() || !configFile.canRead() ){
+            throw new FileNotFoundException(configFile.getName() + " doesn't exist or not readable/");
+        }
+
+        Properties properties = new Properties();
+        InputStream input = new FileInputStream(configFile);
+
+        properties.load(input);
+
+        // read the properties file store the values in InputParameters
 
         // At the end make it success
         isSuccess =true;

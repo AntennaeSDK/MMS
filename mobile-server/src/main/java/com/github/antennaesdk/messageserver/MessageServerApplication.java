@@ -25,6 +25,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * <code>MessageServerApplication</code> starts the "Mobile Messaging Server".
@@ -45,6 +46,15 @@ import java.io.FileNotFoundException;
 public class MessageServerApplication {
     public static void main(String[] args) {
 
+        // validate and process input arguments
+        processInputs(args);
+
+        // start MMS
+        SpringApplication.run( MessageServerApplication.class, args);
+    }
+
+    private static void processInputs( String[] args ){
+
         // TODO: parse the CLI and print USAGE if necessary
         // TODO: ability to pass GCM user,password, projectId
         // TODO: ability to change the port
@@ -53,6 +63,7 @@ public class MessageServerApplication {
         CliProcessor cliProcessor = new CliProcessor(args);
 
         try {
+
             cliProcessor.parse();
             cliProcessor.process();
 
@@ -62,9 +73,9 @@ public class MessageServerApplication {
         } catch (FileNotFoundException e) {
             cliProcessor.printError( e);
             cliProcessor.printUsage();
+        } catch (IOException e) {
+            cliProcessor.printError( e);
+            cliProcessor.printUsage();
         }
-
-
-        SpringApplication.run( MessageServerApplication.class, args);
     }
 }
