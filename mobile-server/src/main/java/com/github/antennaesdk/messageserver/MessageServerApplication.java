@@ -15,12 +15,16 @@
  */
 package com.github.antennaesdk.messageserver;
 
+import com.github.antennaesdk.messageserver.cli.CliProcessor;
 import com.github.antennaesdk.messageserver.config.ApplicationConfig;
+import org.apache.commons.cli.ParseException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+
+import java.io.FileNotFoundException;
 
 /**
  * <code>MessageServerApplication</code> starts the "Mobile Messaging Server".
@@ -46,6 +50,20 @@ public class MessageServerApplication {
         // TODO: ability to change the port
         // TODO: ability add SSL connection
         // TODO: ability to pass DB connection details
+        CliProcessor cliProcessor = new CliProcessor(args);
+
+        try {
+            cliProcessor.parse();
+            cliProcessor.process();
+
+        } catch (ParseException e) {
+            cliProcessor.printError( e);
+            cliProcessor.printUsage();
+        } catch (FileNotFoundException e) {
+            cliProcessor.printError( e);
+            cliProcessor.printUsage();
+        }
+
 
         SpringApplication.run( MessageServerApplication.class, args);
     }
