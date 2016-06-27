@@ -30,10 +30,11 @@ public class GcmXmppConfig {
 	public GcmXmppClient getGcmConnection() {
 
 		// username = GCM_PROJECT_ID + @gcm.googleapis.com
-		final String user = "221875529200" + "@gcm.googleapis.com";
+		//final String user = "221875529200" + "@gcm.googleapis.com";
+		final String user = "981962933635" + "@gcm.googleapis.com";
 
 		// password = GCM_SERVER_KEY
-		final String password = "AIzaSyCB-V4dbfcgbLPnd0IQAvPTEg83bo9gqrE";
+		final String password = "AIzaSyCvUF4p_h1P88qvNDkLMPtjBizAbzrtaxA";
 		
 		// Gcm Project Number
 		final String projectId = "981962933635";

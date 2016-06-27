@@ -25,7 +25,7 @@
 
 		<client-api.version>${project-version}</client-api.version>
 		<server-api.version>${project-version}</server-api.version>
-		<message-server>${project-version}</message-server>
+		<message-server.version>${project-version}</message-server.version>
 		<parent-version>${project-version}</parent-version>
 	</properties>
 

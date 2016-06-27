@@ -5,7 +5,7 @@
 
 	<groupId>com.github.antennaesdk.server</groupId>
 	<artifactId>message-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${message-server.version}</version>
 	<packaging>war</packaging>
 
 	<name>Messaging Server</name>
@@ -206,6 +206,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>mms-${version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

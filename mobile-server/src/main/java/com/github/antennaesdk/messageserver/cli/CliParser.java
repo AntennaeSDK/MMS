@@ -30,6 +30,7 @@ public class CliParser {
 
     private String[] args;
     private Options options;
+    private CommandLine commandLine;
 
     public CliParser( String[] args ){
 
@@ -65,7 +66,9 @@ public class CliParser {
         options.addOption(configFile);
     }
 
-    public void parse(){
+    public void parse() throws ParseException {
+        CommandLineParser parser = new DefaultParser();
+        commandLine = parser.parse(options, args);
     }
 
     public void printUsage(){
