@@ -19,12 +19,17 @@ package com.github.antennaesdk.messageserver.config;
 import com.github.antennaesdk.common.beans.AppInfo;
 import com.github.antennaesdk.common.beans.DeviceInfo;
 import com.github.antennaesdk.messageserver.ws.WebSocketConfig;
+import org.apache.catalina.connector.Connector;
+import org.apache.coyote.http11.Http11NioProtocol;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -34,6 +39,8 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
@@ -41,7 +48,7 @@ import java.util.Properties;
 @Import( {H2Config.class, GcmXmppConfig.class, WebSocketConfig.class} )
 public class ApplicationConfig {
 
-    //public static final Class[] entityClasses = { User.class, DeviceInfo.class, AppInfo.class, AuthToken.class,Channel.class, Message.class, ChannelClient.class };
+
     public static final Class[] entityClasses = {  DeviceInfo.class, AppInfo.class };
 	
 	@Bean(name = "viewResolver")
@@ -92,5 +99,53 @@ public class ApplicationConfig {
                 exporter.afterPropertiesSet();
             }
         };
+    }
+
+    @Bean
+    public Integer httpPort() {
+        //return SocketUtils.findAvailableTcpPort();
+        return 10080;
+    }
+
+    @Bean
+    public Integer httpsPort(){
+        return 8443;
+    }
+
+
+    // DONT USE PORT 9090 , since that port is used by H2 in-memory DB
+    @Bean
+    public EmbeddedServletContainerFactory servletContainer() {
+
+        // Standard port is created by the constructor
+        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory( httpPort() );
+
+        //tomcat.addAdditionalTomcatConnectors( createSslConnector());
+
+        return tomcat;
+    }
+
+
+    private Connector createSslConnector() {
+        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+        Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();
+        try {
+            File keystore = new ClassPathResource("keystore").getFile();
+            File truststore = new ClassPathResource("keystore").getFile();
+            connector.setScheme("https");
+            connector.setSecure(true);
+            connector.setPort( httpsPort() );
+            protocol.setSSLEnabled(true);
+            protocol.setKeystoreFile(keystore.getAbsolutePath());
+            protocol.setKeystorePass("changeit");
+            protocol.setTruststoreFile(truststore.getAbsolutePath());
+            protocol.setTruststorePass("changeit");
+            protocol.setKeyAlias("apitester");
+            return connector;
+        }
+        catch (IOException ex) {
+            throw new IllegalStateException("can't access keystore: [" + "keystore"
+                    + "] or truststore: [" + "keystore" + "]", ex);
+        }
     }
 }
