@@ -17,6 +17,7 @@
 package com.github.antennaesdk.messageserver.config;
 
 
+import com.github.antennaesdk.messageserver.cli.InputParameters;
 import com.github.antennaesdk.messageserver.gcm.xmpp.GcmXmppClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,16 +31,20 @@ public class GcmXmppConfig {
 	public GcmXmppClient getGcmConnection() {
 
 		// username = GCM_PROJECT_ID + @gcm.googleapis.com
-		//final String user = "221875529200" + "@gcm.googleapis.com";
-		final String user = "981962933635" + "@gcm.googleapis.com";
+		InputParameters inputs = InputParameters.getInstance();
+
+		//final String user = "981962933635" + "@gcm.googleapis.com";
+		final String senderId = inputs.getGcmSenderId() + inputs.getGcmHost();
 
 		// password = GCM_SERVER_KEY
-		final String password = "AIzaSyCvUF4p_h1P88qvNDkLMPtjBizAbzrtaxA";
+		//final String password = "AIzaSyCvUF4p_h1P88qvNDkLMPtjBizAbzrtaxA";
+		final String apiKey = inputs.getGcmApiKey();
 		
 		// Gcm Project Number
-		final String projectId = "981962933635";
+		//final String projectId = "981962933635";
+		final String projectId = inputs.getGcmSenderId();
 
-		GcmXmppClient client = new GcmXmppClient(user, password, projectId);
+		GcmXmppClient client = new GcmXmppClient(senderId, apiKey);
 		client.connect();
 		
 		return client;

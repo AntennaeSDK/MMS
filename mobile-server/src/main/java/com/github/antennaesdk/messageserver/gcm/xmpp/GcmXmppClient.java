@@ -50,9 +50,9 @@ public class GcmXmppClient {
 	
 	private String gcmHost;
 	private int gcmPort;
-	private String gcmUser;
-	private String gcmPassword;
-	private String gcmProjectId;
+	private String gcmSenderId;
+	private String gcmApiKey;
+	//private String gcmProjectId;
 	
 	
 	private XMPPTCPConnection connection; 
@@ -63,21 +63,21 @@ public class GcmXmppClient {
     protected volatile boolean connectionDraining = false;
 	
 	
-	public GcmXmppClient( String user, String password, String projectId  ){
-		this( GCM_PROD_HOST, GCM_PROD_PORT, user, password, projectId);
+	public GcmXmppClient( String user, String password ){
+		this( GCM_PROD_HOST, GCM_PROD_PORT, user, password);
 	}
 
-	public GcmXmppClient( String host, int port, String user, String password, String projectId ){
+	public GcmXmppClient( String host, int port, String senderId, String apiKey ){
 		
-		if( user == null || user.trim().equals("") ){
+		if( senderId == null || senderId.trim().equals("") ){
 			throw new NullPointerException("user cannot be null");
 		}
-		if( password == null || password.trim().equals("")){
+		if( apiKey == null || apiKey.trim().equals("")){
 			throw new NullPointerException("password cannot be null");
 		}
-		if( projectId == null || projectId.trim().equals("")){
-			throw new NullPointerException("Gcm ProjectId cannot be null or empty");
-		}
+//		if( projectId == null || projectId.trim().equals("")){
+//			throw new NullPointerException("Gcm ProjectId cannot be null or empty");
+//		}
 		
 		if( host == null || host.trim().equals("")){
 			throw new NullPointerException("host cannot be null");
@@ -88,9 +88,9 @@ public class GcmXmppClient {
 		
 		this.gcmHost = host;
 		this.gcmPort = port;
-		this.gcmUser = user;
-		this.gcmPassword = password;
-		this.gcmProjectId = projectId;
+		this.gcmSenderId = senderId;
+		this.gcmApiKey = apiKey;
+		//this.gcmProjectId = projectId;
 		
 		ProviderManager.addExtensionProvider(GCM_ELEMENT_NAME, GCM_NAMESPACE, new  ExtensionElementProvider<ExtensionElement>() {
             @Override
@@ -133,13 +133,13 @@ public class GcmXmppClient {
 		connection.addConnectionListener( new LoggingConnectionListener() );
 
 		// Handle incoming packets
-		connection.addAsyncStanzaListener(new GcmStanzaListener() , new GcmStanzaFilter( this.gcmProjectId ) );
+		connection.addAsyncStanzaListener(new GcmStanzaListener() , new GcmStanzaFilter( this.gcmSenderId ) );
 
 		// Log all outgoing packets
-		connection.addPacketInterceptor(new GcmStanzaInterceptor(), new GcmStanzaFilter( this.gcmProjectId ) );
+		connection.addPacketInterceptor(new GcmStanzaInterceptor(), new GcmStanzaFilter( this.gcmSenderId ) );
 
 		try {
-			connection.login(gcmUser, gcmPassword);
+			connection.login(gcmSenderId, gcmApiKey);
 		} catch (XMPPException | SmackException | IOException e) {
 			e.printStackTrace();
 		}

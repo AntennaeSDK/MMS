@@ -1,3 +1,4 @@
+
 888b     d888 888b     d888  .d8888b.
 8888b   d8888 8888b   d8888 d88P  Y88b
 88888b.d88888 88888b.d88888 Y88b.
@@ -7,5 +8,4 @@
 888   "   888 888   "   888 Y88b  d88P
 888       888 888       888  "Y8888P"
 
-      Mobile Messaging Server
-
+Antennae Mobile Messaging Server
