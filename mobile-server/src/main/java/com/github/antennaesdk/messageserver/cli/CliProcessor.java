@@ -118,6 +118,8 @@ public class CliProcessor {
         // read the config file
         String config = InputParameters.getInstance().getConfigFile();
 
+        logger.info("begin loading from config file " + config);
+
         File configFile = new File(config);
         if( !configFile.exists() || !configFile.canRead() ){
             throw new FileNotFoundException(configFile.getName() + " doesn't exist or not readable/");
@@ -129,6 +131,15 @@ public class CliProcessor {
         properties.load(input);
 
         // read the properties file store the values in InputParameters
+        InputParameters inputParameters = InputParameters.getInstance();
+
+        inputParameters.setGcmApiKey(properties.getProperty("gcm.server.apikey") );
+        inputParameters.setGcmSenderId( properties.getProperty("gcm.sender.id"));
+        inputParameters.setGcmHost( properties.getProperty("gcm.server.domain"));
+        inputParameters.setGcmPreProdEndPoint( properties.getProperty("gcm.endpoint.pre-prod"));
+        inputParameters.setGcmProdEndPoint( properties.getProperty("gcm.endpoint.prod"));
+
+        logger.info("input processing complete ");
 
         // At the end make it success
         isSuccess =true;
