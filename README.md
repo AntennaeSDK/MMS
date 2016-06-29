@@ -44,4 +44,5 @@ java -jar mms-<m.n.p>.war --usage
    http://docs.oracle.com/javase/6/docs/technotes/tools/solaris/keytool.html
 
 2. How to create GCM senderId and apiKey?
-   https://developers.google.com/cloud-messaging/gcm
+   Click on "Get A Configuration file button"
+   https://developers.google.com/cloud-messaging/android/client#get-config
