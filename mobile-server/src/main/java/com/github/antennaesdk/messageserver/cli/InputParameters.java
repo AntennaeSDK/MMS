@@ -31,6 +31,14 @@ public class InputParameters {
     private String gcmPreProdEndPoint = null;
     private String gcmProdEndPoint = null;
 
+    private int httpPort = HTTP_PORT;
+    private int httpsPort = HTTPS_PORT;
+    private int h2port = H2_PORT;
+
+    static final int HTTP_PORT = 8080;
+    static final int HTTPS_PORT = 8443;
+    static final int H2_PORT = 9090;
+
     public static InputParameters getInstance(){
         return INSTANCE;
     }
@@ -94,6 +102,36 @@ public class InputParameters {
     public void setGcmProdEndPoint(String gcmProdEndPoint) {
         if( this.gcmProdEndPoint == null ) {
             this.gcmProdEndPoint = gcmProdEndPoint;
+        }else{
+            throw new IllegalAccessError("Cannot change value");
+        }
+    }
+    public int getHttpPort() {
+        return httpPort;
+    }
+    public void setHttpPort(int httpPort) {
+        if( this.httpPort == HTTP_PORT ) {
+            this.httpPort = httpPort;
+        }else{
+            throw new IllegalAccessError("Cannot change value");
+        }
+    }
+    public int getHttpsPort() {
+        return httpsPort;
+    }
+    public void setHttpsPort(int httpsPort) {
+        if( this.httpsPort == HTTPS_PORT ) {
+            this.httpsPort = httpsPort;
+        }else{
+            throw new IllegalAccessError("Cannot change value");
+        }
+    }
+    public int getH2port() {
+        return h2port;
+    }
+    public void setH2port(int h2port) {
+        if( this.h2port == H2_PORT ) {
+            this.h2port = h2port;
         }else{
             throw new IllegalAccessError("Cannot change value");
         }
