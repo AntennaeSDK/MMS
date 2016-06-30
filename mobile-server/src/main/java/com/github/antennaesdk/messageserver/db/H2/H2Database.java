@@ -15,6 +15,7 @@
  */
 package com.github.antennaesdk.messageserver.db.H2;
 
+import com.github.antennaesdk.messageserver.cli.InputParameters;
 import com.github.antennaesdk.messageserver.db.DBConnectionProperties;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.tool.hbm2ddl.DatabaseMetadata;
@@ -57,11 +58,14 @@ public class H2Database {
 
         // TODO: move these to a common connection properties
         // TODO: add the ability to be passed from CLI
+        InputParameters inputParameters = InputParameters.getInstance();
+        int h2port = inputParameters.getH2port();
+
         String dbName = "mms";
         String dbUser = "sa";
         String dbPassword = "";
-        String dbFileUrl = "jdbc:h2:file:~/." + dbName +"/" + dbName + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER_PORT=9090";
-        String dbMemUrl = "jdbc:h2:mem:" + dbName + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER_PORT=9090";
+        String dbFileUrl = "jdbc:h2:file:~/." + dbName +"/" + dbName + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER_PORT=" +h2port;
+        String dbMemUrl = "jdbc:h2:mem:" + dbName + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER_PORT="+ h2port;
 
         // check whether the DB is already created.
         String dbPath = System.getProperty("user.home");
