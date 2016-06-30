@@ -22,7 +22,7 @@ A sample configuration file can be generated
 java -version
 
 ## start mms
-java -jar mms-<m.n.p>.war -f <config-file>
+java -jar mms-<m.n.p>.war -c <config-dir>
 ```
 
 ## Generate sample configuration file
