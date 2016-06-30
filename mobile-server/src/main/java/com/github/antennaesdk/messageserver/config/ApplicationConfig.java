@@ -18,6 +18,7 @@ package com.github.antennaesdk.messageserver.config;
 
 import com.github.antennaesdk.common.beans.AppInfo;
 import com.github.antennaesdk.common.beans.DeviceInfo;
+import com.github.antennaesdk.messageserver.cli.InputParameters;
 import com.github.antennaesdk.messageserver.ws.WebSocketConfig;
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
@@ -104,12 +105,14 @@ public class ApplicationConfig {
     @Bean
     public Integer httpPort() {
         //return SocketUtils.findAvailableTcpPort();
-        return 10080;
+        //return 10080;
+        return InputParameters.getInstance().getHttpPort();
     }
 
     @Bean
     public Integer httpsPort(){
-        return 8443;
+        //return 8443;
+        return InputParameters.getInstance().getHttpsPort();
     }
 
 
@@ -120,7 +123,9 @@ public class ApplicationConfig {
         // Standard port is created by the constructor
         TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory( httpPort() );
 
-        //tomcat.addAdditionalTomcatConnectors( createSslConnector());
+        if( InputParameters.getInstance().isSslEnabled()) {
+            tomcat.addAdditionalTomcatConnectors(createSslConnector());
+        }
 
         return tomcat;
     }
@@ -129,23 +134,29 @@ public class ApplicationConfig {
     private Connector createSslConnector() {
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();
-        try {
-            File keystore = new ClassPathResource("keystore").getFile();
-            File truststore = new ClassPathResource("keystore").getFile();
-            connector.setScheme("https");
-            connector.setSecure(true);
-            connector.setPort( httpsPort() );
-            protocol.setSSLEnabled(true);
-            protocol.setKeystoreFile(keystore.getAbsolutePath());
-            protocol.setKeystorePass("changeit");
-            protocol.setTruststoreFile(truststore.getAbsolutePath());
-            protocol.setTruststorePass("changeit");
-            protocol.setKeyAlias("apitester");
-            return connector;
-        }
-        catch (IOException ex) {
-            throw new IllegalStateException("can't access keystore: [" + "keystore"
-                    + "] or truststore: [" + "keystore" + "]", ex);
-        }
+        InputParameters inputParameters = InputParameters.getInstance();
+
+        //File keystore = new ClassPathResource("keystore").getFile();
+        File keystore = new File( inputParameters.getConfigDir(), inputParameters.getKeyStoreFile());
+        //File keystore = new ClassPathResource( inputParameters.getKeyStoreFile()).getFile();
+
+        //File truststore = new ClassPathResource("keystore").getFile();
+        File truststore = new File( inputParameters.getConfigDir(), inputParameters.getKeyStoreFile());
+        //File truststore = new ClassPathResource(inputParameters.getKeyStoreFile()).getFile();
+
+        connector.setScheme("https");
+        connector.setSecure(true);
+        connector.setPort( httpsPort() );
+        protocol.setSSLEnabled(true);
+        protocol.setKeystoreFile(keystore.getAbsolutePath());
+        //protocol.setKeystorePass("changeit");
+        protocol.setKeyPass( inputParameters.getKeyStorePassword());
+        protocol.setTruststoreFile(truststore.getAbsolutePath());
+        //protocol.setTruststorePass("changeit");
+        protocol.setTruststorePass( inputParameters.getKeyStorePassword());
+        //protocol.setKeyAlias("apitester");
+        protocol.setKeyAlias( inputParameters.getKeyStoreKeyName());
+
+        return connector;
     }
 }

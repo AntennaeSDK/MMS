@@ -41,8 +41,8 @@ java -jar mms-<m.n.p>.war --usage
 
 1. How to create the keystore and store certificates?
    Official documentation from java provides the details, besides there are several online resources that provide documenation about keytool.
-   http://docs.oracle.com/javase/6/docs/technotes/tools/solaris/keytool.html
-   [Example: ](./KEYGEN.md) 
+   [Official Keytool Docs](http://docs.oracle.com/javase/6/docs/technotes/tools/solaris/keytool.html)
+   [Command to create a keystore and self-signed certificate](KEYGEN.md)  
 
 2. How to create GCM senderId and apiKey?
    Click on "Get A Configuration file button"

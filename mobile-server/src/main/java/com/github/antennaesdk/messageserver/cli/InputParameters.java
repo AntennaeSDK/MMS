@@ -24,12 +24,20 @@ public class InputParameters {
 
     private static final InputParameters INSTANCE = new InputParameters();
 
-    private String configFile;
+    private String configDir;
+    private String configFile = "mms.config";
+
     private String gcmSenderId;
     private String gcmApiKey;
     private String gcmHost  = null;
     private String gcmPreProdEndPoint = null;
     private String gcmProdEndPoint = null;
+
+    private boolean sslEnabled = false;
+
+    private String keyStoreFile = null;
+    private String keyStorePassword = null;
+    private String keyStoreKeyName =null;
 
     private int httpPort = HTTP_PORT;
     private int httpsPort = HTTPS_PORT;
@@ -46,14 +54,22 @@ public class InputParameters {
     private InputParameters(){
     }
 
+    public String getConfigDir() {
+        return configDir;
+    }
+    public void setConfigDir(String configDir) {
+        if( this.configDir == null ) {
+            this.configDir = configDir;
+        }else{
+            throw new IllegalAccessError("Cannot change value");
+        }
+    }
     public String getConfigFile() {
         return configFile;
     }
     public void setConfigFile(String configFile) {
-        if( this.configFile == null ) {
+        if( configFile != null ) {
             this.configFile = configFile;
-        }else{
-            throw new IllegalAccessError("Cannot change value");
         }
     }
     public String getGcmSenderId() {
@@ -105,6 +121,30 @@ public class InputParameters {
         }else{
             throw new IllegalAccessError("Cannot change value");
         }
+    }
+    public boolean isSslEnabled() {
+        return sslEnabled;
+    }
+    public void setSslEnabled(boolean sslEnabled) {
+        this.sslEnabled = sslEnabled;
+    }
+    public String getKeyStoreFile() {
+        return keyStoreFile;
+    }
+    public void setKeyStoreFile(String keyStoreFile) {
+        this.keyStoreFile = keyStoreFile;
+    }
+    public String getKeyStorePassword() {
+        return keyStorePassword;
+    }
+    public void setKeyStorePassword(String keyStorePassword) {
+        this.keyStorePassword = keyStorePassword;
+    }
+    public String getKeyStoreKeyName() {
+        return keyStoreKeyName;
+    }
+    public void setKeyStoreKeyName(String keyStoreKeyName) {
+        this.keyStoreKeyName = keyStoreKeyName;
     }
     public int getHttpPort() {
         return httpPort;

@@ -59,14 +59,15 @@ public class CliProcessor {
                 .required(false)
                 .build();
 
-        Option configFile = Option.builder("f")
-                .argName("config-file")
+        Option configFile = Option.builder("c")
+                .argName("config-folder")
                 .hasArg(false)
-                .longOpt("file")
-                .desc("By default MMS looks for mms.config in the current directory. " +
-                        "This Property file contains GCM, Database, SSL details. " +
-                        "If the default mms.config is not found, then, it must be provided by -f or --file option. "+
-                        "When both are absent, MMS will exit")
+                .longOpt("config")
+                .desc(  "by default MMS will look for 'config' folder in the current directory." +
+                        "config folder contains all config files needed by MMS" +
+                        "config folder mms.config and keystore files " +
+                        "This mms.config contains GCM, Database, SSL details. " +
+                        "When mms.config file is absent or details are missing, MMS will exit")
                 .required(false)
                 .build();
 
@@ -83,48 +84,49 @@ public class CliProcessor {
 
         InputParameters inputParameters = InputParameters.getInstance();
 
-
         // check whether "-f" option is provided
-        String file = null;
-        if( commandLine.hasOption("f") || commandLine.hasOption("file") ) {
-            logger.debug("option -f found");
+        String config = null;
+        if( commandLine.hasOption("c") || commandLine.hasOption("config") ) {
+            logger.debug("option -c found");
 
-            file = commandLine.getOptionValue("f");
-            if (file == null) {
-                file = commandLine.getOptionValue("file");
+            config = commandLine.getOptionValue("c");
+            if (config == null) {
+                config = commandLine.getOptionValue("config");
             }
-        }else if (file == null){
+        }else if (config == null){
             // config file is not provided.
             // fallback to be default
-            file = "mms.config";
+            config = "config";
         }
 
-        // check whether "mms.config" file is available in the current directory
-        boolean configFileFound = false;
-        File configFile = new File(file);
-        if( configFile.exists() && configFile.canRead() ){
-            configFileFound = true;
-            inputParameters.setConfigFile(configFile.getAbsolutePath());
+        // check whether "config" folder is available and readable
+        boolean configDirFound = false;
+        File configDir = new File(config);
+        if( configDir.exists() && configDir.isDirectory() && configDir.canRead() ){
+            configDirFound = true;
+            inputParameters.setConfigDir(configDir.getAbsolutePath());
         }else{
             // error condition
-            // -f/--file option is not provided and default config file doesn't exist
-            throw new FileNotFoundException("config file neither provided through -f or --file option nor default 'mms.config' file exists in the current directory.");
+            // -c/--config option is not provided and default config file doesn't exist
+            throw new FileNotFoundException("config folder neither provided through -c or --config option nor default 'config' file exists in the current directory.");
         }
     }
 
     /** process the parameters */
     public void process() throws IOException {
 
-        // read the config file
+        // get the config folder
+        String configDir = InputParameters.getInstance().getConfigDir();
+
+        // get the config file
         String config = InputParameters.getInstance().getConfigFile();
 
-        logger.info("begin loading from config file " + config);
-
-        File configFile = new File(config);
+        File configFile = new File(configDir, config);
         if( !configFile.exists() || !configFile.canRead() ){
             throw new FileNotFoundException(configFile.getName() + " doesn't exist or not readable/");
         }
 
+        logger.info("begin loading from config file " + config);
         Properties properties = new Properties();
         InputStream input = new FileInputStream(configFile);
 
@@ -133,11 +135,39 @@ public class CliProcessor {
         // read the properties file store the values in InputParameters
         InputParameters inputParameters = InputParameters.getInstance();
 
+        // set the GCM API values
         inputParameters.setGcmApiKey(properties.getProperty("gcm.server.apikey") );
         inputParameters.setGcmSenderId( properties.getProperty("gcm.sender.id"));
         inputParameters.setGcmHost( properties.getProperty("gcm.server.domain"));
         inputParameters.setGcmPreProdEndPoint( properties.getProperty("gcm.endpoint.pre-prod"));
         inputParameters.setGcmProdEndPoint( properties.getProperty("gcm.endpoint.prod"));
+
+        // check whether SSL is enabled
+        String sslEnabled = properties.getProperty("ssl.enabled");
+        boolean ssl = Boolean.valueOf(sslEnabled);
+        inputParameters.setSslEnabled( ssl );
+
+        // set the http/https ports
+        if( properties.getProperty("http.port") != null ) {
+            int httpPort = Integer.valueOf(properties.getProperty("http.port"));
+            inputParameters.setHttpPort( httpPort );
+        }
+        if( properties.getProperty("https.port") != null ) {
+            int httpsPort = Integer.valueOf(properties.getProperty("https.port"));
+            inputParameters.setHttpsPort( httpsPort );
+        }
+
+
+        // set H2 port number
+        if( properties.getProperty("h2.port") != null ){
+            int h2port = Integer.valueOf( properties.getProperty("h2.port"));
+            inputParameters.setH2port(h2port);
+        }
+
+        // set the SSL values
+        inputParameters.setKeyStoreFile(properties.getProperty("keystore.file"));
+        inputParameters.setKeyStorePassword(properties.getProperty("keystore.password"));
+        inputParameters.setKeyStoreKeyName(properties.getProperty("keystore.keyname"));
 
         logger.info("input processing complete ");
 
