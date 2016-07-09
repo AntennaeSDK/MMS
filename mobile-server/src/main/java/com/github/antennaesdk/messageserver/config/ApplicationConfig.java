@@ -105,13 +105,11 @@ public class ApplicationConfig {
     @Bean
     public Integer httpPort() {
         //return SocketUtils.findAvailableTcpPort();
-        //return 10080;
         return InputParameters.getInstance().getHttpPort();
     }
 
     @Bean
     public Integer httpsPort(){
-        //return 8443;
         return InputParameters.getInstance().getHttpsPort();
     }
 

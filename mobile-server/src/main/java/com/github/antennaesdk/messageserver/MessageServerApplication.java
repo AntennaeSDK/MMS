@@ -69,13 +69,13 @@ public class MessageServerApplication {
 
         } catch (ParseException e) {
             cliProcessor.printError( e);
-            cliProcessor.printUsage();
+            cliProcessor.printUsage(-1);
         } catch (FileNotFoundException e) {
             cliProcessor.printError( e);
-            cliProcessor.printUsage();
+            cliProcessor.printUsage( -2);
         } catch (IOException e) {
             cliProcessor.printError( e);
-            cliProcessor.printUsage();
+            cliProcessor.printUsage(-3);
         }
     }
 }
