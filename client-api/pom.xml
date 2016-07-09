@@ -23,6 +23,18 @@
 		<java.version>1.5</java.version>
 	</properties>
 
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 
 		<dependency>
@@ -52,7 +64,6 @@
 		</dependency>
 
 	</dependencies>
-
 
 	<distributionManagement>
 		<repository>
