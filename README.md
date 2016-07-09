@@ -15,6 +15,12 @@ MMS needs to be supplied with following configuration
 3. Port numbers ( default http port is 8080, default https port is 8443 )
 
 A sample configuration file can be generated 
+## Generate sample configuration file
+
+generates the sample config files under "config" folder
+```bash
+java -jar mms-<m.n.p>.war -g
+```
 
 ## Start MMS
 ```bash
@@ -25,16 +31,10 @@ java -version
 java -jar mms-<m.n.p>.war -c <config-dir>
 ```
 
-## Generate sample configuration file
-
-prints the sample configuration file to stdout
-```bash
-java -jar mms-<m.n.p>.war -g
-```
 
 ## Usage
 ```bash
-java -jar mms-<m.n.p>.war --usage
+java -jar mms-<m.n.p>.war --help
 ```
 
 ## FAQ
