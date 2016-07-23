@@ -18,6 +18,8 @@ package com.github.antennaesdk.common.messages;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -48,6 +50,12 @@ public class ServerRestMessage {
     // actual message ( this the payload if its POST/PUT call )
     // this is optional
     private String payLoad;
+
+    // the headers for a REST message
+    private Map<String, String> headers =  new HashMap<>();
+
+    // The name/value pairs of multipart entities. Implies a multipart request.
+    private Map<String, String> multipartEntities;
 
     // unique identified to track the request on the client side.
     private String requestId;
@@ -92,6 +100,10 @@ public class ServerRestMessage {
     public void setPayLoad(String payLoad) {
         this.payLoad = payLoad;
     }
+    public Map<String, String> getHeaders() { return headers; }
+    public void setHeaders(Map<String, String> headers) { this.headers = headers; }
+    public void setMultipartEntities(Map<String, String> multipartEntities) { this.multipartEntities = multipartEntities; }
+    public Map<String, String> getMultipartEntities() { return multipartEntities; }
     public String getRequestId() {
         return requestId;
     }

@@ -118,7 +118,12 @@
 		    <artifactId>spring-integration-websocket</artifactId>
 		</dependency>
 
-
+		<!-- REST protocol dependencies -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>3.4.0</version>
+		</dependency>
          
 		<!-- 
 		<dependency>

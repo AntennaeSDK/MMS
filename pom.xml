@@ -42,7 +42,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<project-version>0.1.5</project-version>
+		<project-version>0.1.7-SNAPSHOT</project-version>
 
 		<client-api.version>${project-version}</client-api.version>
 		<server-api.version>${project-version}</server-api.version>
