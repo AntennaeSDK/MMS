@@ -20,6 +20,8 @@ import com.github.antennaesdk.common.messages.*;
 import com.github.antennaesdk.common.messages.util.JsonUtil;
 import com.github.antennaesdk.messageserver.rest.RestClient;
 import com.github.antennaesdk.server.messages.ClientMessageWrapper;
+import okhttp3.*;
+import okio.ByteString;
 import org.apache.catalina.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +34,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -321,19 +322,50 @@ public class ClientTextWebSocketHandler extends TextWebSocketHandler implements 
 
         @Override
         public void run() {
-
             // construct the REST call
-            RestClient client = new RestClient( serverRestMessage.getHost());
-            String result = client.GET( serverRestMessage.getPath());
+            OkHttpClient client = new OkHttpClient();
 
-            ClientMessage response = new ClientMessage( serverRestMessage.getRequestId());
-            response.setTo( serverRestMessage.getFrom());
-            response.setPayLoad( result );
-            response.setMessageQOS( ClientMessageQOSEnum.DIRECT_CONNECTION_ONLY );
+            Map<String, String> multipartEntities = serverRestMessage.getMultipartEntities();
+            RequestBody body;
 
-            logger.info("background task completed");
+            if(multipartEntities != null) {
+                MultipartBody.Builder multipartBuilder = new MultipartBody.Builder();
+                multipartBuilder.setType(MultipartBody.FORM);
 
-            sendToClient(session, response);
+                for(Map.Entry<String, String> entity : multipartEntities.entrySet()) {
+                    MultipartBody.Part part = MultipartBody.Part.createFormData(entity.getKey(), entity.getValue());
+                    multipartBuilder.addPart(part);
+                }
+
+                body = multipartBuilder.build();
+            } else {
+                body = RequestBody.create(MediaType.parse("application/json"), serverRestMessage.getPayLoad());
+            }
+
+            Request request = new Request.Builder()
+                    .url(serverRestMessage.getHost() + serverRestMessage.getPath())
+                    .method(serverRestMessage.getMethod(), body)
+                    .build();
+
+            try {
+                Response restCallResponse = client.newCall(request).execute();
+                String result = restCallResponse.body().string();
+
+
+//            RestClient client = new RestClient( serverRestMessage.getHost());
+//            String result = client.GET( serverRestMessage.getPath());
+
+                ClientMessage response = new ClientMessage(serverRestMessage.getRequestId());
+                response.setTo(serverRestMessage.getFrom());
+                response.setPayLoad(result);
+                response.setMessageQOS(ClientMessageQOSEnum.DIRECT_CONNECTION_ONLY);
+
+                logger.info("background task completed");
+
+                sendToClient(session, response);
+            }catch (IOException ex) {
+                logger.error("Failed to read response from REST endpoint", ex);
+            }
         }
     }
 }

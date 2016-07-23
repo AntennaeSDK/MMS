@@ -19,6 +19,9 @@ package com.github.antennaesdk.common.messages;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by snambi on 6/21/16.
  */
