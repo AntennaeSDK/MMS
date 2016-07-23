@@ -23,8 +23,22 @@
 		<java.version>1.5</java.version>
 	</properties>
 
-	<dependencies>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
+	<developers>
+		<developer>
+			<name>Nambi Sankaran</name>
+			<email>snambi@gmail.com</email>
+		</developer>
+	</developers>
+
+	<dependencies>
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
@@ -54,12 +68,12 @@
 	</dependencies>
 
 
-	<distributionManagement>
+<!--	<distributionManagement>
 		<repository>
 			<id>bintray-snambi-maven</id>
 			<name>snambi-maven</name>
 			<url>https://api.bintray.com/maven/snambi/maven/org.antennae/;publish=1</url>
 		</repository>
-	</distributionManagement>
+	</distributionManagement>-->
 
 </project>
