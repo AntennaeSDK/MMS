@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.antennaesdk.server</groupId>
-	<artifactId>message-server</artifactId>
+	<artifactId>mms</artifactId>
 	<version>${message-server.version}</version>
 	<packaging>war</packaging>
 
