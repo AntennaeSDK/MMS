@@ -44,6 +44,7 @@ import java.io.IOException;
 @Import(ApplicationConfig.class)
 @ComponentScan( basePackages = { "com.github.antennaesdk.common", "com.github.antennaesdk.messageserver"})
 public class MessageServerApplication {
+
     public static void main(String[] args) {
 
         // validate and process input arguments
