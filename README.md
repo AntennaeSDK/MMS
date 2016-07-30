@@ -2,11 +2,17 @@
 
 MMS acts as bridge between client apps and server apps, while abstracting the complexities of real-world networks from server applications.
 
-# Architecture
+## Architecture
 
-MMS acts as a bridge between client apps (mobile/web/iot) and server apps running in the datacenter. The client apps run on real-world networks and user owned hardware. The QoS on real-world networks are unpredictable, based several factors such as location, ISP, Wireless provider, peak times, load on the network etc. On the other hand, service applications are hosted within a datacenter, where hardware, capacity, network are under control of the application owner.
+The client apps run on real-world networks and user owned hardware. The QoS on real-world networks are unpredictable, based several factors such as location, ISP, Wireless provider, peak times, load on the network etc. On the other hand, service applications are hosted within a datacenter, where hardware, capacity, network are under control of the application owner. MMS seamlessly abstracts the complexities of real-world issues faced by client apps from the server applications.
 
 For more details, please read the [Architecture](Architecture.md)
+
+## Features
+
+1. Client Apps one TCP connection to interact with the server
+2. The messages from Server(s) are routed based on priority and availability of the client
+3. Cient Apps can talk to legacy server apps without compromizing performance
 
 ## Setup
 
