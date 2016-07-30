@@ -10,9 +10,9 @@ For more details, please read the [Architecture](Architecture.md)
 
 ## Features
 
-1. Client Apps one TCP connection to interact with the server
+1. Client Apps use one TCP connection to interact with the server(s) whether they are REST APIs or messaging APIs
 2. The messages from Server(s) are routed based on priority and availability of the client
-3. Cient Apps can talk to legacy server apps without compromizing performance
+3. Client Apps can talk to legacy server apps without compromising performance
 
 ## Setup
 
