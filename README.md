@@ -4,7 +4,7 @@ MMS acts as bridge between client apps and server apps, while abstracting the co
 
 ## Architecture
 
-MMS seamlessly abstracts the complexities of real-world issues faced by client apps from the server applications.
+MMS seamlessly abstracts the complexities of real-world networks where client apps exist from the server applications.
 
 For more details, please read the [Architecture](Architecture.md)
 
